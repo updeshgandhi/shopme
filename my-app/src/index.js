@@ -1,15 +1,39 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux'
+import { createStore } from 'redux'
+import {
+  BrowserRouter,
+  Routes,
+  Route
+} from "react-router-dom"
+import rootReducer from './reducers'
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { AppError } from './components/AppError';
+
+const Cart = React.lazy(() => import('./components/Cart'))
+
+const store = createStore(rootReducer)
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <AppError>
-      <App />
-    </AppError>
+    <BrowserRouter>
+      <Provider store={store}>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route
+            path="/cart"
+            element={
+              <React.Suspense fallback={<>Loading...</>}>
+                <Cart />
+              </React.Suspense>
+            }
+          />
+        </Routes>
+      </Provider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

@@ -1,47 +1,27 @@
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const express = require('express');
+const axios = require('axios');
 const path = require('path');
 const app = express(),
       bodyParser = require("body-parser");
-      port = 80;
-
-// place holder for the data
-const users = [
-  {
-    firstName: "first1",
-    lastName: "last1",
-    email: "abc@gmail.com"
-  },
-  {
-    firstName: "first2",
-    lastName: "last2",
-    email: "abc@gmail.com"
-  },
-  {
-    firstName: "first3",
-    lastName: "last3",
-    email: "abc@gmail.com"
-  }
-];
+const port = 80;
 
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../my-app/build')));
 
-app.get('/api/users', (req, res) => {
-  console.log('api/users called!')
-  res.json(users);
-});
 
-app.post('/api/user', (req, res) => {
-  const user = req.body.user;
-  console.log('Adding user:::::', user);
-  users.push(user);
-  res.json("user addedd");
-});
+app.get('/api/product', async (req, res) => {
+  let url = `https://run.mocky.io/v3/05e9651d-528e-4d7c-a60b-bae8f09684c6`;
 
-app.get('/', (req,res) => {
-  res.sendFile(path.join(__dirname, '../my-app/build/index.html'));
+  try {
+    const response = await axios.get(url);
+    res.json(response.data);
+  }
+  catch (err) {
+    res.send(err)
+  }
 });
 
 app.listen(port, () => {
-    console.log(`Server listening on the port::${port}`);
+    console.log(`Server listening on the port:: ${port}`);
 });
